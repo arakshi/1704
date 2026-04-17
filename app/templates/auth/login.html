@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Авторизация{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h2 class="h5 mb-3">Вход в систему</h2>
+                <form method="post" class="vstack gap-3">
+                    <div>
+                        <label class="form-label">Логин</label>
+                        <input type="text" name="username" class="form-control" placeholder="driver" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Пароль</label>
+                        <input type="password" name="password" class="form-control" placeholder="123456" required>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Войти</button>
+                </form>
+                <hr>
+                <p class="small text-muted mb-0">Логины: driver / 123456, accountant / 123456, admin / 123456</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}1С учет{% endblock %}
+{% block content %}
+<div class="card shadow-sm onec-shell">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>1С: Бухгалтерия</strong>
+        <a class="btn btn-sm btn-primary" href="{{ url_for('accountant.one_c_page') }}">Обновить из WEB</a>
+    </div>
+    <div class="card-body p-0">
+        <div class="row g-0">
+            <div class="col-md-4 border-end">
+                <div class="list-group list-group-flush">
+                    {% for doc in documents %}
+                        <a href="{{ url_for('accountant.one_c_page', doc_id=doc.id) }}" class="list-group-item list-group-item-action {% if selected and selected.id == doc.id %}active{% endif %}">
+                            <div class="fw-semibold">{{ doc.document_type }} #{{ doc.id }}</div>
+                            <div class="small">{{ doc.counterparty or 'Без контрагента' }}</div>
+                        </a>
+                    {% else %}
+                        <div class="list-group-item text-muted">Принятых документов нет.</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-8 p-3">
+                {% if selected %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="{{ url_for('accountant.upload_file', filename=selected.file_name) }}" alt="scan" class="img-fluid border rounded">
+                        </div>
+                        <div class="col-md-6 small">
+                            <p><strong>Заказ:</strong> {{ selected.order_number }}</p>
+                            <p><strong>Тип:</strong> {{ selected.document_type }}</p>
+                            <p><strong>Номер:</strong> {{ selected.doc_number or '-' }}</p>
+                            <p><strong>Дата:</strong> {{ selected.doc_date.strftime('%d.%m.%Y') if selected.doc_date else '-' }}</p>
+                            <p><strong>Контрагент:</strong> {{ selected.counterparty or '-' }}</p>
+                            <p><strong>Сумма:</strong> {{ selected.amount_display() or '-' }}</p>
+                            <p><strong>Водитель:</strong> {{ selected.driver.full_name }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Выберите документ из списка слева.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
