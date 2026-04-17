@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Кабинет водителя{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-12 col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5">Загрузка документа</h2>
+                <form method="post" enctype="multipart/form-data" class="vstack gap-3">
+                    <div>
+                        <label class="form-label">Номер заказа</label>
+                        <input type="text" class="form-control" name="order_number" required>
+                    </div>
+                    <div>
+                        <label class="form-label">Тип документа</label>
+                        <select class="form-select" name="document_type" required>
+                            <option value="">Выберите</option>
+                            <option>ТТН</option>
+                            <option>Акт</option>
+                            <option>Счет-фактура</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Фото / скан</label>
+                        <input type="file" class="form-control" name="file" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Загрузить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">История загрузок</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>Превью</th>
+                            <th>Заказ</th>
+                            <th>Тип</th>
+                            <th>Статус</th>
+                            <th>Дата</th>
+                            <th>Комментарий</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for doc in documents %}
+                            <tr>
+                                <td><img src="{{ url_for('accountant.upload_file', filename=doc.file_name) }}" class="thumb" alt="preview"></td>
+                                <td>{{ doc.order_number }}</td>
+                                <td>{{ doc.document_type }}</td>
+                                <td>
+                                    <span class="badge status-badge {{
+                                        'status-accepted' if doc.status == statuses.ACCEPTED.value else
+                                        'status-rejected' if doc.status in [statuses.REJECTED.value, statuses.AUTO_REJECTED.value] else
+                                        'status-waiting' if doc.status == statuses.UNDER_REVIEW.value else
+                                        'status-reupload'
+                                    }}">{{ doc.status }}</span>
+                                </td>
+                                <td>{{ doc.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                <td class="small text-muted">{{ doc.status_comment or '-' }}</td>
+                                <td>
+                                    {% if doc.status in [statuses.REJECTED.value, statuses.NEED_REUPLOAD.value, statuses.AUTO_REJECTED.value] %}
+                                        <form method="post" action="{{ url_for('driver.reupload', doc_id=doc.id) }}">
+                                            <input type="hidden" name="order_number" value="{{ doc.order_number }}">
+                                            <input type="hidden" name="document_type" value="{{ doc.document_type }}">
+                                            <input type="file" name="file" class="form-control form-control-sm mb-1" required accept="image/*">
+                                            <button class="btn btn-sm btn-warning">Перезагрузить</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="7" class="text-center text-muted">Документы пока не загружались.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
