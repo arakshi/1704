@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Админка{% endblock %}
+{% block content %}
+<div class="d-flex gap-2 mb-3 flex-wrap">
+    <form method="post" action="{{ url_for('admin.create_samples') }}"><button class="btn btn-outline-primary">Создать начальные данные</button></form>
+    <form method="post" action="{{ url_for('admin.reset_db') }}" onsubmit="return confirm('Сбросить БД?');"><button class="btn btn-outline-danger">Сброс БД</button></form>
+    <form method="post" action="{{ url_for('admin.reinit') }}" onsubmit="return confirm('Переинициализировать проект?');"><button class="btn btn-warning">Переинициализация</button></form>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-header">Пользователи</div>
+            <ul class="list-group list-group-flush">
+                {% for u in users %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>{{ u.username }}</span>
+                        <span class="badge bg-secondary">{{ u.role }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header">Документы (последние 100)</div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>ID</th><th>Заказ</th><th>Тип</th><th>Статус</th><th>Водитель</th></tr></thead>
+                    <tbody>
+                    {% for d in documents %}
+                        <tr><td>{{ d.id }}</td><td>{{ d.order_number }}</td><td>{{ d.document_type }}</td><td>{{ d.status }}</td><td>{{ d.driver.username }}</td></tr>
+                    {% else %}
+                        <tr><td colspan="5" class="text-center text-muted">Нет данных.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
