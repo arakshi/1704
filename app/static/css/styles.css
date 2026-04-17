@@ -1,0 +1,37 @@
+body {
+    background: #f6f8fb;
+}
+
+.card {
+    border: 0;
+    border-radius: 12px;
+}
+
+.thumb {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+}
+
+.status-accepted { background: #198754; color: #fff; }
+.status-rejected { background: #dc3545; color: #fff; }
+.status-waiting { background: #0d6efd; color: #fff; }
+.status-reupload { background: #fd7e14; color: #fff; }
+
+.clickable-doc { cursor: pointer; }
+
+#modalImage {
+    transition: transform 0.2s ease;
+    transform-origin: center center;
+}
+
+.onec-shell .list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
